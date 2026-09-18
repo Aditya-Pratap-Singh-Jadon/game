@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Startup Street XI - Inauguration</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Background cinematic particles (optional canvas) -->
+      <canvas id="bg-canvas"></canvas>
+
+      <!-- Initial Instruction Screen -->
+      <div id="instruction-overlay" class="overlay">
+        <h1>STARTUP STREET XI</h1>
+        <h2>THE FINAL PIECE OF THE PUZZLE</h2>
+        <p>Arrange the vision.</p>
+        <p class="small-text">[ 3&times;3 PUZZLE ]</p>
+        <button id="start-btn">BEGIN</button>
+      </div>
+
+      <!-- Main Puzzle Screen -->
+      <div id="game-screen" class="hidden">
+        <!-- Progress Indicator -->
+        <div id="progress-indicator">PIECES IN PLACE: 0 / 9</div>
+        
+        <!-- Puzzle Grid -->
+        <div id="puzzle-board">
+          <!-- Grid positions 1-9 -->
+          <div class="grid-cell" data-pos="1"></div>
+          <div class="grid-cell" data-pos="2"></div>
+          <div class="grid-cell" data-pos="3"></div>
+          <div class="grid-cell" data-pos="4"></div>
+          <div class="grid-cell" data-pos="5"></div>
+          <div class="grid-cell" data-pos="6"></div>
+          <div class="grid-cell" data-pos="7"></div>
+          <div class="grid-cell" data-pos="8"></div>
+          <div class="grid-cell" data-pos="9"></div>
+        </div>
+      </div>
+
+      <!-- Celebration Overlay -->
+      <div id="celebration-overlay" class="overlay hidden">
+        <h1 id="msg-1" class="hidden">16 PIECES. ONE VISION.</h1>
+        <h1 id="msg-2" class="hidden title-text">STARTUP STREET XI</h1>
+        <h2 id="msg-3" class="hidden highlight-text">OFFICIALLY INAUGURATED</h2>
+      </div>
+      
+      <!-- Confetti Canvas -->
+      <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <!-- Hidden Operator Controls -->
+    <div id="operator-controls">
+      <button id="op-scramble">SCRAMBLE (1)</button>
+      <button id="op-solve">SOLVE (2)</button>
+      <button id="op-reset">RESET (3)</button>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+
+:root {
+  --bg-color: #050505;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --accent-color: #00d2ff;
+  --accent-glow: rgba(0, 210, 255, 0.4);
+  --success-color: #00ff88;
+  --success-glow: rgba(0, 255, 136, 0.5);
+  
+  --puzzle-size: 80vh;
+  --grid-gap: 2px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Fullscreen, no scrolling */
+  user-select: none; /* Prevent text selection while dragging */
+  -webkit-user-select: none;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: radial-gradient(circle at center, #1a1a2e 0%, #050505 100%);
+}
+
+#bg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.3;
+}
+
+#confetti-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.5s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Typography */
+h1 {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.small-text {
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  color: var(--accent-color);
+  margin-top: 2rem;
+  text-transform: uppercase;
+}
+
+.title-text {
+  font-size: 5rem;
+  background: linear-gradient(90deg, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.highlight-text {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--success-color);
+  text-shadow: 0 0 30px var(--success-glow);
+}
+
+button {
+  background: transparent;
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+  padding: 1rem 3rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  margin-top: 2rem;
+  box-shadow: 0 0 15px transparent;
+}
+
+button:hover {
+  background: var(--accent-color);
+  color: #000;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Game Screen */
+#game-screen {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+  width: 100%;
+  height: 100%;
+}
+
+#game-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#progress-indicator {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+#puzzle-board {
+  width: var(--puzzle-size);
+  height: var(--puzzle-size);
+  max-width: 90vw;
+  max-height: 90vw;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  background: #222;
+  border: 4px solid #333;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  position: relative;
+  transition: all 1s ease;
+}
+
+.grid-cell {
+  background: #111;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-cell.highlight {
+  box-shadow: inset 0 0 0 4px var(--accent-color);
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: grab;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  z-index: 20;
+  touch-action: none; /* Crucial for pointer events on mobile */
+}
+
+.tile:active {
+  cursor: grabbing;
+}
+
+.tile.dragging {
+  z-index: 100;
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
+  opacity: 0.95;
+  transition: none; /* Remove transition while following pointer */
+}
+
+.tile.animating {
+  /* Used when swapping, let the CSS transition handle it */
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+}
+
+/* Completion Animation Classes */
+.puzzle-solved #puzzle-board {
+  gap: 0; /* Remove gaps */
+  border-color: var(--success-color);
+  box-shadow: 0 0 50px var(--success-glow);
+  transform: scale(1.02);
+}
+
+.puzzle-solved .tile {
+  cursor: default;
+}
+
+.puzzle-solved #progress-indicator {
+  color: var(--success-color);
+  text-shadow: 0 0 10px var(--success-glow);
+}
+
+/* Operator Controls */
+#operator-controls {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 9999;
+  opacity: 0.1;
+  transition: opacity 0.3s;
+}
+
+#operator-controls:hover {
+  opacity: 1;
+}
+
+#operator-controls button {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  margin: 0 5px;
+  border: 1px solid #555;
+  color: #888;
+  background: #111;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+#operator-controls button:hover {
+  background: #333;
+  color: #fff;
+  border-color: #fff;
+}
+
+/* Celebration Messages Animation */
+#celebration-overlay {
+  background: rgba(0, 0, 0, 0.6); /* Slightly transparent to see the puzzle */
+}
+
+.msg-reveal {
+  animation: revealText 1s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+@keyframes revealText {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
