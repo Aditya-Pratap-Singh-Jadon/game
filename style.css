@@ -8,9 +8,12 @@
   --accent-glow: rgba(0, 210, 255, 0.4);
   --success-color: #00ff88;
   --success-glow: rgba(0, 255, 136, 0.5);
-  
-  --puzzle-size: 80vh;
-  --grid-gap: 2px;
+
+  --puzzle-width: 1376px;
+  --puzzle-height: 768px;
+  --tile-width: 458.67px;
+  --tile-height: 256px;
+  --grid-gap: 0px;
 }
 
 * {
@@ -170,13 +173,13 @@ button:hover {
 }
 
 #puzzle-board {
-  width: var(--puzzle-size);
-  height: var(--puzzle-size);
-  max-width: 90vw;
-  max-height: 90vw;
+  width: min(1100px, calc(100vw - 120px));
+  aspect-ratio: 1376 / 768;
+  height: auto;
+  max-width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: var(--grid-gap);
   background: #222;
   border: 4px solid #333;
